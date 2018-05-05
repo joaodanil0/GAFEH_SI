@@ -24,9 +24,9 @@ area = int(num_nos)/float(densidade);
 lado = int(math.sqrt(area));
 
 for j in range(simulacoes_res,simulacoes+1):
-		
+		# 
 	os.system("java -cp binaries/bin/ sinalgo.Run 							\
-			-batch 								  							\
+			-batch								  							\
 			-project GAFEH_SI				  								\
 			-gen "+ num_nos + " GAFEH_SI:GAF  GAFEH_SI:Grid C=UDG    		\
 			-gen 1 GAFEH_SI:Sink GAFEH_SI:Grid C=UDG						\

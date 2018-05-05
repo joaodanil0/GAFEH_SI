@@ -4,7 +4,7 @@ import datetime
 import math
 
 # Variaveis da simulacao
-num_nos = 50
+num_nos = 4
 simulacoes = 3
 
 raio = 30
@@ -16,7 +16,7 @@ maxTimeBetweenSends = 7200
 minTimeBetweenSends = 120
 maxEnergyOfBattery = 1000
 minEnergyOfBattery = 0
-maxSolarIntensity = 1000
+maxSolarIntensity = 1000 * multiplicadorIntensidade
 minSolarIntensity = 0
 wattPico = 0.15
 
@@ -66,8 +66,7 @@ for simulacao in range(1, simulacoes+1):
 			debbugfile.write(' ... ok\n')				
 	
 		break
-
-os.system('python3 p_processa_' + tipoSimulacao + '.py ' + str(simulacoes) + ' ' + str(num_nos))	
+	
 debbugfile.close()
 
 

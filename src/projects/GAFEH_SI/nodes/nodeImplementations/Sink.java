@@ -50,6 +50,11 @@ public class Sink extends Node{
 	 */
 	public int nameDir;
 	
+	/**
+	 * Compute a quantity of packets received in each hour
+	 */
+	public int pcktsReceivedhour = 0;
+	
 	@Override
 	public void handleMessages(Inbox inbox) {
 		
@@ -89,7 +94,7 @@ public class Sink extends Node{
 	@Override
 	public void postStep() {
 		
-		if(Global.currentTime == 259200){
+		if(Global.currentTime == 345600){
 			
 			double percentPcktArrived = (pcktsReceivedFromNetwork/pcktsSentByNetwork)*100;
 		 	
@@ -97,6 +102,19 @@ public class Sink extends Node{
 			log.logln("Porcentagem de pacotes recebidos,pacotes recebidos,pacotes enviados");
 			log.logln(Double.toString(percentPcktArrived) + "," + pcktsReceivedFromNetwork + "," + pcktsSentByNetwork);
 			
+		}
+		
+		if(Global.currentTime == 1) {
+			log = Logging.getLogger(simulationType + "_Simulacao_" + nameDir + "/EntregasPorHora.csv");
+			log.logln("Pacotes recebidos por hora");
+			log.logln("" + pcktsReceivedhour);
+			pcktsReceivedhour = 0;
+		}
+		
+		if(Global.currentTime % 3600 == 0) {
+			log = Logging.getLogger(simulationType + "_Simulacao_" + nameDir + "/EntregasPorHora.csv");
+			log.logln("" + pcktsReceivedhour);
+			pcktsReceivedhour = 0;
 		}
 	}
 
