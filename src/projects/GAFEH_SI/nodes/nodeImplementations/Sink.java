@@ -53,7 +53,12 @@ public class Sink extends Node{
 	/**
 	 * Compute a quantity of packets received in each hour
 	 */
-	public int pcktsReceivedhour = 0;
+	public double pcktsReceivedhour = 0;
+	
+	/**
+	 * Compute a quantity of packets sent by network each hour
+	 */
+	public static double pcktsSenthour = 0;
 	
 	@Override
 	public void handleMessages(Inbox inbox) {
@@ -106,15 +111,21 @@ public class Sink extends Node{
 		
 		if(Global.currentTime == 1) {
 			log = Logging.getLogger(simulationType + "_Simulacao_" + nameDir + "/EntregasPorHora.csv");
-			log.logln("Pacotes recebidos por hora");
-			log.logln("" + pcktsReceivedhour);
+			log.logln("Hora,Pacotes recebidos por hora, Pacotes enviados por hora, porcentagem de pacotes entregues");
+			double percentDeliveredHours = (pcktsReceivedhour/pcktsSenthour)*100;
+			log.logln(Global.currentTime/3600 +"," + pcktsReceivedhour + "," + pcktsSenthour + "," + Double.toString(percentDeliveredHours));						
 			pcktsReceivedhour = 0;
+			pcktsSenthour = 0;
 		}
 		
 		if(Global.currentTime % 3600 == 0) {
 			log = Logging.getLogger(simulationType + "_Simulacao_" + nameDir + "/EntregasPorHora.csv");
-			log.logln("" + pcktsReceivedhour);
+			
+			double percentDeliveredHours = (pcktsReceivedhour/pcktsSenthour)*100;
+			log.logln(Global.currentTime/3600 +"," + pcktsReceivedhour + "," + pcktsSenthour + "," + Double.toString(percentDeliveredHours));				
 			pcktsReceivedhour = 0;
+			pcktsSenthour = 0;
+	
 		}
 	}
 
@@ -159,14 +170,15 @@ public class Sink extends Node{
 		return false;	
 	}
 	
+	double old = 0;
 	private void processDataMessage(DataMessage msg) {
 		
 		if(!isPcktReceived(msg.idMessage)){
 			
 			
 			idMessages.add(msg.idMessage);
-			pcktsReceivedFromNetwork++;
-						
+			pcktsReceivedFromNetwork++;	
+			pcktsReceivedhour++;
 		}
 		
 	}
