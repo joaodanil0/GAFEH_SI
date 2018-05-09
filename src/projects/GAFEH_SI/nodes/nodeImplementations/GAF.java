@@ -684,15 +684,19 @@ public class GAF extends Node{
 		else
 			solarIntensity = CustomGlobal.intensidadeSolar;
 		
-		double time = ((maxTimeBetweenSends - minTimeBetweenSends)/(minSolarIntensity - maxSolarIntensity))*(solarIntensity*constIntensity)  - 
-		              ((maxTimeBetweenSends - minTimeBetweenSends)/(minSolarIntensity - maxSolarIntensity))*maxSolarIntensity +
-		              minTimeBetweenSends;
+		//double time = ((maxTimeBetweenSends - minTimeBetweenSends)/(minSolarIntensity - maxSolarIntensity))*(solarIntensity*constIntensity)  - 
+		//              ((maxTimeBetweenSends - minTimeBetweenSends)/(minSolarIntensity - maxSolarIntensity))*maxSolarIntensity +
+		//              minTimeBetweenSends;
+		
+		
+		double time = (minTimeBetweenSends - maxTimeBetweenSends)/(Math.pow(maxSolarIntensity, 2) - Math.pow(minSolarIntensity, 2))*Math.pow(solarIntensity,2) + 
+					   ((maxTimeBetweenSends*Math.pow(maxSolarIntensity, 2) - minTimeBetweenSends*Math.pow(minSolarIntensity, 2))/((Math.pow(maxSolarIntensity, 2) - Math.pow(minSolarIntensity, 2)))) ;
+		
 		
 		if(time <= minTimeBetweenSends)
 			time = minTimeBetweenSends;
 		
-		//System.out.println("Time: " + Global.currentTime/3600 + " | time: " + time + " | Si: " + solarIntensity);
-		
+				
 		return time;
 	}
 	
