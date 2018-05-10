@@ -113,6 +113,9 @@ public class GAF extends Node{
 	 * How long the node stay in sleep mode
 	 */
 	public double ts;
+	
+	public boolean isSleep = false;
+	public double energyRemaining = 0;
 		
 	/**
 	 * Estimation node active time
@@ -255,7 +258,7 @@ public class GAF extends Node{
 	@Override
 	public void preStep() {
 		
-		ta = calculateTimeSend();
+		
 	}
 
 	@Override
@@ -308,7 +311,7 @@ public class GAF extends Node{
 		}	
 		else if(!hasEnergy()) {
 			setColor(Color.MAGENTA);
-			this.state = States.discovery;
+			this.state = States.sleep;
 			this.startTaTimer = false;
 			this.startTdTimer = false;
 			this.startTsTimer = false;
@@ -317,6 +320,16 @@ public class GAF extends Node{
 
 		if(hasEnergyPowerUp() && flag) {
 			flag = false;
+			if(!startTsTimer) {
+				tsTimer = new TsTimer(this);
+				tsTimer.startRelative(1, GAF.this);
+				startTsTimer = true;
+			}
+		}
+		
+		if(hasEnergy() && flag) {
+			setColor(Color.GRAY);
+			battery.modoSleep();
 		}
 		
 		generateLog();
@@ -326,6 +339,14 @@ public class GAF extends Node{
 	public void checkRequirements() throws WrongConfigurationException {
 		
 		
+	}
+	
+	public String toString() {
+		return "Max Energy: "+ battery.getEnergiaMaxima() + "\n" + 
+			   "Energy: " + battery.getEnergiaAtual() + "\n" +
+			   "Time to Send:" + deleteme2 + "\n" +
+			   "Sleep Time: " + ts + "\n" + 
+			   "Enat: " + enat + "\n";
 	}
 	
 	//----------------------------------------------------------------------------
@@ -382,8 +403,19 @@ public class GAF extends Node{
 		else if((this.state == msg.state) && (this.gridID == msg.gridID)) {
 			
 			if(energyTd < msg.energyRemaining) {
-				this.state = States.sleep;
-				this.ts = msg.enat;
+				
+				if(this.state == States.active) {
+					this.state = States.sleep;
+					this.ts = msg.enat;
+				}
+				else {
+					this.isSleep = true;
+					if(energyRemaining < msg.energyRemaining) {
+						this.ts = msg.enat;
+						energyRemaining = msg.energyRemaining;
+					}
+					
+				}				
 			}
 		}
 		else if(this.gridID != msg.gridID){
@@ -522,7 +554,7 @@ public class GAF extends Node{
 	 * @return true if has energy. False if don't have energy
 	 */
 	public boolean hasEnergyPowerUp() {
-		if(battery.getEnergiaAtual() >= battery.getEnergiaEnvio()*100) 
+		if(battery.getEnergiaAtual() >= battery.getEnergiaEnvio()*500) 
 			return true;
 				
 		return false;
@@ -540,7 +572,8 @@ public class GAF extends Node{
 			 */
 			
 			
-			td = 10;			
+			td = 10;	
+			ta = calculateTimeSend();
 			enat = ta;
 			
 			battery.gastaEnergiaEnvio();			
@@ -561,6 +594,7 @@ public class GAF extends Node{
 	/**
 	 * Make process of active mode (based in GAF)
 	 */
+	double deleteme2 = 0;
 	public void activeMode() {
 		
 		if(!startTaTimer) {
@@ -581,7 +615,7 @@ public class GAF extends Node{
 		
 		if(!startTdTimer && (enat > td)) {			
 			
-			tdTimer = new TdTimer(ID, gridID, enat, state, this, battery.getEnergiaAtual());
+			tdTimer = new TdTimer(ID, gridID, enat- td-6, state, this, battery.getEnergiaAtual());
 			tdTimer.startRelative(td, GAF.this);
 			startTdTimer = true;
 		}	
@@ -684,13 +718,13 @@ public class GAF extends Node{
 		else
 			solarIntensity = CustomGlobal.intensidadeSolar;
 		
-		//double time = ((maxTimeBetweenSends - minTimeBetweenSends)/(minSolarIntensity - maxSolarIntensity))*(solarIntensity*constIntensity)  - 
-		//              ((maxTimeBetweenSends - minTimeBetweenSends)/(minSolarIntensity - maxSolarIntensity))*maxSolarIntensity +
-		//              minTimeBetweenSends;
+		double time = ((maxTimeBetweenSends - minTimeBetweenSends)/(minSolarIntensity - maxSolarIntensity))*(solarIntensity*constIntensity)  - 
+		              ((maxTimeBetweenSends - minTimeBetweenSends)/(minSolarIntensity - maxSolarIntensity))*maxSolarIntensity +
+		              minTimeBetweenSends;
 		
 		
-		double time = (minTimeBetweenSends - maxTimeBetweenSends)/(Math.pow(maxSolarIntensity, 2) - Math.pow(minSolarIntensity, 2))*Math.pow(solarIntensity,2) + 
-					   ((maxTimeBetweenSends*Math.pow(maxSolarIntensity, 2) - minTimeBetweenSends*Math.pow(minSolarIntensity, 2))/((Math.pow(maxSolarIntensity, 2) - Math.pow(minSolarIntensity, 2)))) ;
+		//double time = (minTimeBetweenSends - maxTimeBetweenSends)/(Math.pow(maxSolarIntensity, 2) - Math.pow(minSolarIntensity, 2))*Math.pow(solarIntensity,2) + 
+		//			   ((maxTimeBetweenSends*Math.pow(maxSolarIntensity, 2) - minTimeBetweenSends*Math.pow(minSolarIntensity, 2))/((Math.pow(maxSolarIntensity, 2) - Math.pow(minSolarIntensity, 2)))) ;
 		
 		
 		if(time <= minTimeBetweenSends)
