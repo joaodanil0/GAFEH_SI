@@ -1,3 +1,5 @@
+#! /usr/bin/env python3
+
 import os
 import shutil
 import datetime
@@ -46,7 +48,7 @@ for simulacao in range(1, simulacoes+1):
 			debbugfile.write('Iniciando ' + tipoSimulacao+ '_Simulacao_' + str(simulacao))
 			
 			# chama a simulacao faltante
-			os.system('python3 p_varia_' + tipoSimulacao + '.py ' + str(num_nos) + ' ' + str(simulacoes) + ' ' + str(simulacao) + ' ' + 
+			os.system('./p_varia_' + tipoSimulacao + '.py ' + str(num_nos) + ' ' + str(simulacoes) + ' ' + str(simulacao) + ' ' + 
 																	str(raio) + ' ' + str(densidade) + ' ' + str(tipoSimulacao) + ' ' + 
 																	str(num_rounds) + ' ' + str(multiplicadorIntensidade) + ' ' + str(maxTimeBetweenSends) + ' ' +
 																	str(minTimeBetweenSends) + ' ' + str(maxEnergyOfBattery) + ' ' + str(minEnergyOfBattery) + ' ' +
@@ -61,7 +63,7 @@ for simulacao in range(1, simulacoes+1):
 			debbugfile.write('Iniciando ' + tipoSimulacao+ '_Simulacao_' + str(simulacao))
 			
 			# chama a simulacao faltante
-			os.system('python3 p_varia_' + tipoSimulacao + '.py ' + str(num_nos) + ' ' + str(simulacoes) + ' ' + str(simulacao) + ' ' + 
+			os.system('./p_varia_' + tipoSimulacao + '.py ' + str(num_nos) + ' ' + str(simulacoes) + ' ' + str(simulacao) + ' ' + 
 																	str(raio) + ' ' + str(densidade) + ' ' + str(tipoSimulacao) + ' ' + 
 																	str(num_rounds) + ' ' + str(multiplicadorIntensidade) + ' ' + str(maxTimeBetweenSends) + ' ' +
 																	str(minTimeBetweenSends) + ' ' + str(maxEnergyOfBattery) + ' ' + str(minEnergyOfBattery) + ' ' +
