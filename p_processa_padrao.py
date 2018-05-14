@@ -34,7 +34,6 @@ for j in range(simulacoes):
 		dead_nodes[k][j] = dataNodes.loc[k]['Quantidade de nos mortos']
 		pckt_delivered[k][j] = dataDelivered.loc[k][' porcentagem de pacotes entregues']
 
-
 data_mean = {'Simulacao 1': mean_hour.T[0][:], 'Simulacao 2': mean_hour.T[1][:], 'Simulacao 3': mean_hour.T[2][:],
 			 'Simulacao 4': mean_hour.T[3][:], 'Simulacao 5': mean_hour.T[4][:], 'Simulacao 6': mean_hour.T[5][:],
 			 'Simulacao 7': mean_hour.T[6][:], 'Simulacao 8': mean_hour.T[7][:], 'Simulacao 9': mean_hour.T[8][:],
