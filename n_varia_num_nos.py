@@ -36,9 +36,9 @@ for i in range(varia_res, varia_max+1, varia_tic):
 	lado = int(math.sqrt(area))
     
 	for j in range(simulacoes_res,simulacoes+1):
-		
+		#-batch
 		os.system("java -cp binaries/bin/ sinalgo.Run 						\
-			-batch								  							\
+											  							\
 			-project GAFEH_SI 					  							\
 			-gen "+ str(num_nos) + " GAFEH_SI:GAF  GAFEH_SI:Grid C=UDG 		\
 			-gen 1 GAFEH_SI:Sink GAFEH_SI:Grid C=UDG						\

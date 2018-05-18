@@ -6,15 +6,15 @@ import datetime
 import math
 
 # Variaveis da simulacao
-num_nos = 5
-simulacoes = 3
+num_nos = 529
+simulacoes = 1
 
 raio = 30
 densidade = 0.03
 tipoSimulacao = 'padrao'
 num_rounds =  int(86400 * 3)
 multiplicadorIntensidade = 0.4
-maxTimeBetweenSends = 7200 
+maxTimeBetweenSends = 7200
 minTimeBetweenSends = 120
 maxEnergyOfBattery = 1000
 minEnergyOfBattery = 0

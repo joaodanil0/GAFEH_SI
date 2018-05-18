@@ -84,7 +84,7 @@ public class Grid extends DistributionModel {
   		start = false;
 			
   	}			
-	return new Position(i * size + (pertuba.nextGaussian()), j * size + (pertuba.nextGaussian()), 0);
+	return new Position(i * size + (pertuba.nextGaussian()*1), j * size + (pertuba.nextGaussian()*1), 0);
   }
 	
 	

@@ -15,6 +15,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 
+import projects.GAFEH_SI.CustomGlobal;
 import projects.GAFEH_SI.nodes.messages.DataMessage;
 import projects.GAFEH_SI.nodes.timers.FloodingTimer;
 
@@ -24,7 +25,7 @@ public class Sink extends Node{
 	/**
 	 * Save the id messages received
 	 */
-	public ArrayList<Integer>idMessages = new ArrayList<>();
+	public ArrayList<Double>idMessages = new ArrayList<>();
 	
 	/**
 	 * Compute the quantity of packets was send from all nodes
@@ -68,13 +69,12 @@ public class Sink extends Node{
 			
 			Message msg = inbox.next();	
 			
-			if(msg instanceof DataMessage) {
-				
+			if(msg instanceof DataMessage) {				
 				processDataMessage((DataMessage) msg);
 			}
 		}
 	}	
-
+	
 	@Override
 	public void preStep() {
 		
@@ -100,15 +100,14 @@ public class Sink extends Node{
 	@Override
 	public void postStep() {
 		
-if(Global.currentTime == Main.runtime.getNumberOfRounds()){
+		if(Global.currentTime == Main.runtime.getNumberOfRounds()){
 						
 			
 			double percentPcktArrived = (pcktsReceivedFromNetwork/pcktsSentByNetwork)*100;
 			
 			if(pcktsSentByNetwork == 0)
 				percentPcktArrived = 0;			
-			
-		 	
+					 	
 			log = Logging.getLogger(simulationType + "_SimulacaoTX_" + nameDir + "/TXentrega.csv");
 			log.logln("Porcentagem de pacotes recebidos,pacotes recebidos,pacotes enviados");
 			log.logln(Double.toString(percentPcktArrived) + "," + pcktsReceivedFromNetwork + "," + pcktsSentByNetwork);
@@ -118,24 +117,14 @@ if(Global.currentTime == Main.runtime.getNumberOfRounds()){
 		if(Global.currentTime == 1) {
 			log = Logging.getLogger(simulationType + "_Simulacao_" + nameDir + "/EntregasPorHora.csv");
 			log.logln("Hora,Pacotes recebidos por hora, Pacotes enviados por hora, porcentagem de pacotes entregues");
-			double percentDeliveredHours = (pcktsReceivedhour/pcktsSenthour)*100;
-			
-			if(pcktsSenthour == 0)
-				percentDeliveredHours = 0;
-			
-			log.logln(Global.currentTime/3600 +"," + pcktsReceivedhour + "," + pcktsSenthour + "," + Double.toString(percentDeliveredHours));						
-			pcktsReceivedhour = 0;
-			pcktsSenthour = 0;
 		}
 		
-		if(Global.currentTime % 3600 == 0) {
+		if(CustomGlobal.minuto == 0 && CustomGlobal.segundo == 0) {
 			log = Logging.getLogger(simulationType + "_Simulacao_" + nameDir + "/EntregasPorHora.csv");
 			
 			double percentDeliveredHours = (pcktsReceivedhour/pcktsSenthour)*100;
 			
-			if(pcktsSenthour == 0)
-				percentDeliveredHours = 0;
-			
+			System.out.println("\n" + showTime() + " | " + pcktsReceivedhour + " | " + pcktsSenthour + " | "+ Double.toString(percentDeliveredHours));
 			log.logln(Global.currentTime/3600 +"," + pcktsReceivedhour + "," + pcktsSenthour + "," + Double.toString(percentDeliveredHours));				
 			pcktsReceivedhour = 0;
 			pcktsSenthour = 0;
@@ -172,7 +161,7 @@ if(Global.currentTime == Main.runtime.getNumberOfRounds()){
 	 * @param idMessage Message to be checked
 	 * @return True if packet received, False if not received
 	 */
-	public boolean isPcktReceived(int idMessage) {
+	public boolean isPcktReceived(double idMessage) {
 		
 		for(int i = 0; i< idMessages.size(); i++){			
 			
@@ -184,16 +173,18 @@ if(Global.currentTime == Main.runtime.getNumberOfRounds()){
 		return false;	
 	}
 	
-	double old = 0;
 	private void processDataMessage(DataMessage msg) {
 		
+		
 		if(!isPcktReceived(msg.idMessage)){
-			
+			//System.out.println("Received in :" + showTime() + " | Node: " + msg.ID + " | idMessage: " + msg.idMessage);
+			//System.out.println("---------------------------");
 			
 			idMessages.add(msg.idMessage);
 			pcktsReceivedFromNetwork++;	
 			pcktsReceivedhour++;
 		}
+		
 		
 	}
 	
@@ -217,6 +208,43 @@ if(Global.currentTime == Main.runtime.getNumberOfRounds()){
 			
 			e.printStackTrace();
 		}
+	}
+	
+	public static String showTime() {
+		
+		String aux;
+			
+		aux = "";
+		
+		if(CustomGlobal.hora < 10){
+			
+			aux += "0" + CustomGlobal.hora;
+		}
+		else{
+			
+			aux += CustomGlobal.hora;
+		}
+		
+		if(CustomGlobal.minuto < 10){
+			
+			aux += ":0" + CustomGlobal.minuto;
+		}
+		else{
+			
+			aux += ":" + CustomGlobal.minuto;
+		}
+		
+		if(CustomGlobal.segundo < 10){
+			
+			aux += ":0" + CustomGlobal.segundo;
+			
+		}
+		else{
+			
+			aux += ":" +CustomGlobal.segundo;
+		}
+		
+		return aux;
 	}
 
 	

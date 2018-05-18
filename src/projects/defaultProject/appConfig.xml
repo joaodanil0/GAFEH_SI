@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sinalgo>
 	<ProjectSelector windowWidth="800" windowHeight="600" lastChosenProject="sample1" windowPosX="200" windowPosY="100" isMaximized="false" selectedTab="1" />
-	<GUI windowWidth="672" windowHeight="617" windowPosX="136" windowPosY="0" isMaximized="false" ControlPanelExpandSimulation="true" ControlPanelShowFullViewPanel="false" ControlPanelShowTextPanel="true" ControlPanelShowProjectControl="true" RunOperationIsLimited="false" helpWindowWidth="500" helpWindowHeight="500" helpWindowPosX="200" helpWindowPosY="200" helpWindowIsMaximized="false" />
-	<RandomSeed seedFromPreviousRun="3109597176128982587" />
-	<App lastSelectedFileDirectory="" checkForUpdatesAtStartup="false" updateCheckTimeStamp="0" runCmdLineArgs="-batch -project GAFEH_SI -gen 5 GAFEH_SI:GAF GAFEH_SI:Grid C=UDG -gen 1 GAFEH_SI:Sink GAFEH_SI:Grid C=UDG -rounds 259200 -overwrite dimX=12 dimY=12 GeometricNodeCollection/rMax=30 UDG/rMax=30 maxTimeBetweenSends/time=7200 minTimeBetweenSends/time=120 maxEnergyOfBattery/energy=1000 minEnergyOfBattery/energy=0 maxSolarIntensity/intensity=400.0 minSolarIntensity/intensity=0 wattPico/power=0.15 radiationMultiplier/multiplier=0.4 nameDir/name=3 simulationType/type=padrao constBattery/number=1 constIntensity/number=1 " />
+	<GUI windowWidth="892" windowHeight="720" windowPosX="-1" windowPosY="0" isMaximized="true" ControlPanelExpandSimulation="true" ControlPanelShowFullViewPanel="false" ControlPanelShowTextPanel="true" ControlPanelShowProjectControl="true" RunOperationIsLimited="false" helpWindowWidth="500" helpWindowHeight="500" helpWindowPosX="200" helpWindowPosY="200" helpWindowIsMaximized="false" />
+	<RandomSeed seedFromPreviousRun="4772946796310685067" />
+	<App lastSelectedFileDirectory="" checkForUpdatesAtStartup="false" updateCheckTimeStamp="0" runCmdLineArgs="-project GAFEH_SI -gen 529 GAFEH_SI:GAF GAFEH_SI:Grid C=UDG -gen 1 GAFEH_SI:Sink GAFEH_SI:Grid C=UDG -rounds 259200 -overwrite dimX=132 dimY=132 GeometricNodeCollection/rMax=30 UDG/rMax=30 maxTimeBetweenSends/time=60 minTimeBetweenSends/time=60 maxEnergyOfBattery/energy=1000 minEnergyOfBattery/energy=0 maxSolarIntensity/intensity=400.0 minSolarIntensity/intensity=0 wattPico/power=0.15 radiationMultiplier/multiplier=0.4 nameDir/name=1 simulationType/type=padrao constBattery/number=1 constIntensity/number=1 " />
 	<GenNodesDlg numNodes="100" />
 </sinalgo>
 

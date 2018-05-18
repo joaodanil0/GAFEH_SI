@@ -3,6 +3,7 @@ package projects.GAFEH_SI.nodes.nodeImplementations;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
+import java.util.Random;
 
 import projects.GAFEH_SI.nodes.timers.SendTimer;
 import projects.GAFEH_SI.nodes.nodeImplementations.GAF;
@@ -125,7 +126,7 @@ public class GAF extends Node{
 	/**
 	 * How long the node stay in discovery mode
 	 */
-	public double td;
+	public int td;
 	
 	/**
 	 * Computes a quantity of data packets that have been sent
@@ -150,7 +151,7 @@ public class GAF extends Node{
 	/**
 	 * Save the id messages received
 	 */
-	public ArrayList<Integer>idMessages = new ArrayList<>();
+	public ArrayList<Double>idMessages = new ArrayList<>();
 	
 	/**
 	 * Save the node ID from same virtual grid
@@ -222,7 +223,8 @@ public class GAF extends Node{
 	 */
 	public double constIntensity;
 	
-	
+	public Position errorPosition = new Position();
+		
 	@Override
 	public void handleMessages(Inbox inbox) {
 	
@@ -263,7 +265,7 @@ public class GAF extends Node{
 
 	@Override
 	public void init() {
-		
+		errorPos();
 		divideGrid();
 		getEnergyOfBatery();
 		battery = new Energy(maxBatteryEnergy);
@@ -285,7 +287,7 @@ public class GAF extends Node{
 		//mostraInfo(1);
 		rechargeNode();
 						
-		if(isConfigured && hasEnergy() && (Global.currentTime >= 100) && !flag) {
+		if(isConfigured && hasEnergy() && (Global.currentTime >= 13) && !flag) {
 			
 			switch(state){
 				
@@ -344,9 +346,13 @@ public class GAF extends Node{
 	public String toString() {
 		return "Max Energy: "+ battery.getEnergiaMaxima() + "\n" + 
 			   "Energy: " + battery.getEnergiaAtual() + "\n" +
-			   "Time to Send:" + deleteme2 + "\n" +
+			   "Time to Send:" + ta/2 + "\n" +
 			   "Sleep Time: " + ts + "\n" + 
-			   "Enat: " + enat + "\n";
+			   "Enat: " + enat + "\n" + 
+			   "xPos: " + getPosition().xCoord + "\n" + 
+			   "xPos Error: " + errorPosition.xCoord + "\n" + 
+			   "yPos: " + getPosition().yCoord + "\n" + 
+			   "yPos Error: " + errorPosition.yCoord + "\n";
 	}
 	
 	//----------------------------------------------------------------------------
@@ -360,6 +366,32 @@ public class GAF extends Node{
 	 */
 	public void draw(Graphics g, PositionTransformation pt, boolean highlight){
 		drawNodeAsDiskWithText(g, pt, highlight, Integer.toString(gridID), 1, Color.BLACK);	
+	}
+	
+	public void errorPos() {
+		
+		double xPos = getPosition().xCoord + random.nextGaussian();
+		double yPos = getPosition().yCoord + random.nextGaussian();
+		
+		if(xPos < 0) {
+			errorPosition.xCoord = 0;
+		}
+		else if(xPos >= 0 && xPos <= Configuration.dimX) {
+			errorPosition.xCoord = xPos;
+		}
+		else if(xPos > Configuration.dimX) {
+			errorPosition.xCoord = Configuration.dimX;
+		}
+		
+		if(yPos < 0) {
+			errorPosition.yCoord = 0;
+		}
+		else if(yPos >= 0 && yPos <= Configuration.dimY) {
+			errorPosition.yCoord = yPos;
+		}
+		else if(yPos > Configuration.dimY) {
+			errorPosition.yCoord = Configuration.dimY;
+		}
 	}
 	
 	/**
@@ -377,7 +409,8 @@ public class GAF extends Node{
 			isConfigured = true;
 			this.sinkPosition = msg.sinkPosition;
 			this.sinkId = msg.sinkId;
-			this.sinkDistance = getPosition().distanceTo(this.sinkPosition);
+			
+			this.sinkDistance = errorPosition.distanceTo(this.sinkPosition);
 			FloodingTimer timer = new FloodingTimer(msg.sinkId, msg.sinkPosition, ID, gridID, this);
 			timer.startRelative(1, GAF.this);				
 		}
@@ -389,12 +422,8 @@ public class GAF extends Node{
 	 */
 	private void processDiscoveryMessage(DiscoveryMessage msg) {
 		
-		/*System.out.println("---------------------------");
-		System.out.println("Node: " + msg.nodeID + " | gridID: " + msg.gridID + " | enat: " + msg.enat + " | state: " + msg.state + " | energyRemaining: " + msg.energyRemaining);
-		System.out.println("Node: " +         ID + " | gridID: " +     gridID + " | enat: " +     enat + " | state: " +     state + " | energyRemaining: " + energyTd);
-		System.out.println("Time arrived: " + Global.currentTime);
-		System.out.println("---------------------------\n");
-		*/
+		
+		
 		
 		if((this.state == States.discovery) && (msg.state == States.active) && (this.gridID == msg.gridID)) {
 			this.state = States.sleep;
@@ -405,6 +434,11 @@ public class GAF extends Node{
 			if(energyTd < msg.energyRemaining) {
 				
 				if(this.state == States.active) {
+					System.out.println("---------------------------");
+					System.out.println("Node: " + msg.nodeID + " | gridID: " + msg.gridID + " | enat: " + msg.enat + " | state: " + msg.state + " | energyRemaining: " + msg.energyRemaining);
+					System.out.println("Node: " +         ID + " | gridID: " +     gridID + " | enat: " +     enat + " | state: " +     state + " | energyRemaining: " + energyTd);
+					System.out.println("Time arrived: " + Global.currentTime);
+					System.out.println("---------------------------\n");
 					this.state = States.sleep;
 					this.ts = msg.enat;
 				}
@@ -454,7 +488,7 @@ public class GAF extends Node{
 	 * @param idMessage Message to be checked
 	 * @return True if packet received, False if not received
 	 */
-	public boolean isPcktReceived(int idMessage) {
+	public boolean isPcktReceived(double idMessage) {
 		
 		for(int i = 0; i< idMessages.size(); i++){			
 			
@@ -479,11 +513,11 @@ public class GAF extends Node{
 			
 			for(int i = 0; i<= num_cell; i++){
 
-				if(getPosition().xCoord >= i*r && getPosition().xCoord < (i+1)*r){
+				if(errorPosition.xCoord >= i*r && errorPosition.xCoord < (i+1)*r){
 							
 					for(int j = 0; j <= num_cell; j++){
 					
-						if(getPosition().yCoord >= j*r && getPosition().yCoord < (j+1)*r){
+						if(errorPosition.yCoord >= j*r && errorPosition.yCoord < (j+1)*r){
 							
 							gridID = Integer.parseInt(i + "" + j);	
 							
@@ -566,14 +600,9 @@ public class GAF extends Node{
 	public void discoveryMode() {
 		
 		if(!startTdTimer) {
-			
-			/**
-			 * How long the node stay in discovery mode
-			 */
-			
-			
-			td = 10;	
-			ta = calculateTimeSend();
+						
+			td = 2;	
+			ta = calculateTimeSend() - td;
 			enat = ta;
 			
 			battery.gastaEnergiaEnvio();			
@@ -594,7 +623,8 @@ public class GAF extends Node{
 	/**
 	 * Make process of active mode (based in GAF)
 	 */
-	double deleteme2 = 0;
+	
+	Random random = new Random();
 	public void activeMode() {
 		
 		if(!startTaTimer) {
@@ -602,7 +632,7 @@ public class GAF extends Node{
 			taTimer = new TaTimer(this);
 			taTimer.startRelative(ta, GAF.this);
 			startTaTimer = true;
-			td = (ta/6);
+			td = (int)(ta/6);
 		}
 		
 		if(!startSendTimer) {
@@ -615,10 +645,12 @@ public class GAF extends Node{
 		
 		if(!startTdTimer && (enat > td)) {			
 			
-			tdTimer = new TdTimer(ID, gridID, enat- td-6, state, this, battery.getEnergiaAtual());
+			tdTimer = new TdTimer(ID, gridID, enat- td, state, this, battery.getEnergiaAtual());
 			tdTimer.startRelative(td, GAF.this);
 			startTdTimer = true;
 		}	
+		
+		
 	}
 
 	/**

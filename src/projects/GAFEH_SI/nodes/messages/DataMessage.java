@@ -17,15 +17,14 @@ public class DataMessage extends Message{
 	/**
 	 * Identification of packet
 	 */
-	public int idMessage;
+	public double idMessage;
 	
 	/**
 	 * Identification which grid the message is
 	 */
 	public int gridMessage;
-	
-	
-	public DataMessage(int ID, double distanceSink, int idMessage, int gridMessage) {
+		
+	public DataMessage(int ID, double distanceSink, double idMessage, int gridMessage) {
 		this.ID = ID;
 		this.distanceSink = distanceSink;
 		this.idMessage = idMessage;

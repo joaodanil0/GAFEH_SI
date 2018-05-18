@@ -131,7 +131,7 @@
 		<!--  Models                                                               -->
 		<!--***********************************************************************-->
 		<!--The message transmission model used when none is specified-->
-		<DefaultMessageTransmissionModel value="RandomTime" />
+		<DefaultMessageTransmissionModel value="ConstantTime" />
 
 		<!--Default connectivity model used when none is specified-->
 		<DefaultConnectivityModel value="UDG" />
@@ -152,7 +152,7 @@
 		<DefaultNodeImplementation value="sample4:S4Node" />
 
 		<!--Show the models implemented by all projects in the drop down options. When set to false, only the models by the selected project and the default project are shown.-->
-		<showModelsOfAllProjects value="false" />
+		<showModelsOfAllProjects value="true" />
 
 		<!--***********************************************************************-->
 		<!--  Node storage, position transformation                                -->
@@ -224,8 +224,8 @@
 
 	</Framework>
 	<Custom>
-<GeometricNodeCollection rMax="150"/>
-<UDG rMax="150"/>
+<GeometricNodeCollection rMax="30"/>
+<UDG rMax="30"/>
 
 <maxEnergyOfBattery energy="0"/>
 <minEnergyOfBattery energy="0"/>
@@ -248,12 +248,15 @@
 
 
 <MessageTransmission ConstantTime="1"/>
+<LossyDelivery dropRate="0.1"/>
+
+
 <RandomMessageTransmission distribution="Uniform" min="5" max="6"/>
 	
 <Node defaultSize="3" />
 <S4Node simpleDraw="false"/>
 
-<SINR alpha="2" beta="0.7" noise="0"/>
+<SINR alpha="2" beta="0.05" noise="0"/>
 
 <RandomWayPoint>
 	<Speed distribution="Gaussian" mean="10" variance="20" />
