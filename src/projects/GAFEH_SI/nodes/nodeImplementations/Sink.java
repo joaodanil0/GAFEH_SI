@@ -30,7 +30,7 @@ public class Sink extends Node{
 	/**
 	 * Compute the quantity of packets was send from all nodes
 	 */
-	static public double pcktsSentByNetwork = 0;
+	static public double pcktsSentByNetwork = 0; 
 	
 	/**
 	 * Compute the quantity of packets the sink received from network
@@ -40,7 +40,7 @@ public class Sink extends Node{
 	/**
 	 * Manage the log of simulation
 	 */
-	Logging log;
+	public Logging log;
 	
 	/**
 	 * Give a name of simulation (Density, range e etc.)
@@ -53,14 +53,22 @@ public class Sink extends Node{
 	public int nameDir;
 	
 	/**
-	 * Compute a quantity of packets received in each hour
+	 * Compute a quantity of packets received in each hour (initialize with number of hours)
 	 */
-	public double pcktsReceivedhour = 0;
+	public double[] pcktsReceivedhour = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+									     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+									     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+									     0,0,0,0,0,0,0,0,0,0,0,0
+										};
 	
 	/**
-	 * Compute a quantity of packets sent by network each hour
+	 * Compute a quantity of packets sent by network each hour (initialize with number of hours)
 	 */
-	public static double pcktsSenthour = 0;
+	public static double[] pcktsSenthour = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+										    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+										    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+										    0,0,0,0,0,0,0,0,0,0,0,0
+										   };
 	
 	@Override
 	public void handleMessages(Inbox inbox) {
@@ -79,17 +87,18 @@ public class Sink extends Node{
 	public void preStep() {
 		
 	}
-
-	@Override
+	
 	/**
-	 * Send a flooding package to network with the Sink position
+	 * Send a flooding packet to network with the Sink position
 	 */
+	@Override	
 	public void init() {
-		
+				
 		setSinkPosition();		
 		getParamLog();
 		FloodingTimer t = new FloodingTimer(ID, getPosition(), ID, 0, null);
 		t.startRelative(1, Sink.this);
+		
 	}
 
 	@Override
@@ -99,37 +108,24 @@ public class Sink extends Node{
 
 	@Override
 	public void postStep() {
-		
+				
 		if(Global.currentTime == Main.runtime.getNumberOfRounds()){
 						
 			
 			double percentPcktArrived = (pcktsReceivedFromNetwork/pcktsSentByNetwork)*100;
-			
-			if(pcktsSentByNetwork == 0)
-				percentPcktArrived = 0;			
+					
 					 	
 			log = Logging.getLogger(simulationType + "_SimulacaoTX_" + nameDir + "/TXentrega.csv");
 			log.logln("Porcentagem de pacotes recebidos,pacotes recebidos,pacotes enviados");
 			log.logln(Double.toString(percentPcktArrived) + "," + pcktsReceivedFromNetwork + "," + pcktsSentByNetwork);
 			
-		}
-		
-		if(Global.currentTime == 1) {
 			log = Logging.getLogger(simulationType + "_Simulacao_" + nameDir + "/EntregasPorHora.csv");
-			log.logln("Hora,Pacotes recebidos por hora, Pacotes enviados por hora, porcentagem de pacotes entregues");
-		}
-		
-		if(CustomGlobal.minuto == 0 && CustomGlobal.segundo == 0) {
-			log = Logging.getLogger(simulationType + "_Simulacao_" + nameDir + "/EntregasPorHora.csv");
-			
-			double percentDeliveredHours = (pcktsReceivedhour/pcktsSenthour)*100;
-			
-			System.out.println("\n" + showTime() + " | " + pcktsReceivedhour + " | " + pcktsSenthour + " | "+ Double.toString(percentDeliveredHours));
-			log.logln(Global.currentTime/3600 +"," + pcktsReceivedhour + "," + pcktsSenthour + "," + Double.toString(percentDeliveredHours));				
-			pcktsReceivedhour = 0;
-			pcktsSenthour = 0;
-	
-		}
+			log.logln("Hora,Pacotes recebidos por hora, Pacotes enviados por hora, porcentagem de pacotes entregues");					
+			for(int i = 0; i < (int)(Main.runtime.getNumberOfRounds()/3600); i++) {
+				double percentDeliveredHours = (pcktsReceivedhour[i]/pcktsSenthour[i])*100;
+				log.logln(i +"," + pcktsReceivedhour[i] + "," + pcktsSenthour[i] + "," + Double.toString(percentDeliveredHours));				
+			}				
+		}		
 	}
 
 	@Override
@@ -177,15 +173,11 @@ public class Sink extends Node{
 		
 		
 		if(!isPcktReceived(msg.idMessage)){
-			//System.out.println("Received in :" + showTime() + " | Node: " + msg.ID + " | idMessage: " + msg.idMessage);
-			//System.out.println("---------------------------");
 			
 			idMessages.add(msg.idMessage);
 			pcktsReceivedFromNetwork++;	
-			pcktsReceivedhour++;
-		}
-		
-		
+			pcktsReceivedhour[msg.sendHour]++;
+		}		
 	}
 	
 	public void getParamLog() {

@@ -2,6 +2,7 @@ package projects.GAFEH_SI.nodes.timers;
 
 import java.util.Random;
 
+import projects.GAFEH_SI.CustomGlobal;
 import projects.GAFEH_SI.nodes.messages.DataMessage;
 import projects.GAFEH_SI.nodes.nodeImplementations.GAF;
 import projects.GAFEH_SI.nodes.nodeImplementations.Sink;
@@ -29,13 +30,12 @@ public class SendTimer extends Timer {
 			double idMessage = this.gaf.ID*100000  + (random.nextInt(999) + random.nextGaussian());
 			
 			if(this.gaf.hasEnergy()) {
-				GAF.dataPctsSentByHour++;
+				this.gaf.dataPctsSentByHour++;
 				Sink.pcktsSentByNetwork++;
-				Sink.pcktsSenthour++;
-				this.gaf.dataPctSent++;
-				DataMessage msg = new DataMessage(this.gaf.ID, this.gaf.sinkDistance, idMessage, this.gaf.gridID);
+				this.gaf.dataPctSent++;								
+				Sink.pcktsSenthour[CustomGlobal.hora + 24*CustomGlobal.num_dias]++;	
+				DataMessage msg = new DataMessage(this.gaf.ID, this.gaf.sinkDistance, idMessage, this.gaf.gridID, CustomGlobal.hora + 24*CustomGlobal.num_dias);
 				this.node.broadcast(msg);
-				//System.out.println("Send in:     " + Sink.showTime() + " | Node: " + this.gaf.ID);
 				this.gaf.battery.gastaEnergiaEnvio();
 			}			
 		}

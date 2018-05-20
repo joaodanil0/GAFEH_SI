@@ -6,13 +6,13 @@ import datetime
 import math
 
 # Variaveis da simulacao
-num_nos = 529
-simulacoes = 1
+num_nos = 25
+simulacoes = 3
 
 raio = 30
 densidade = 0.03
 tipoSimulacao = 'padrao'
-num_rounds =  int(86400 * 3)
+num_rounds =  int((86400 * 3) + 3)
 multiplicadorIntensidade = 0.4
 maxTimeBetweenSends = 7200
 minTimeBetweenSends = 120
@@ -72,8 +72,7 @@ for simulacao in range(1, simulacoes+1):
 			debbugfile.write(' ... ok\n')				
 	
 		break
-	
+
+os.system('./p_processa_' + tipoSimulacao + '.py ' + str(simulacoes) + ' ' + str(num_nos) + ' '+ str(num_rounds))
+#os.system('./p_processa_cada_no.py ' + str(simulacoes) + ' ' + str(num_nos) + ' '+ str(num_rounds))	
 debbugfile.close()
-
-
-
